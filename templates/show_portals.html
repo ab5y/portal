@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+  	<ul class=portals>
+  	{% for portal in portals %}
+    	<li><h2>{{ portal.name }}</h2>
+    		{{ portal.firstName+' '+portal.lastName+' '+portal.email }}
+  	{% else %}
+    	<li><em>Unbelievable.  No portals here so far</em>
+  	{% endfor %}
+	</ul>
+{% endblock %}

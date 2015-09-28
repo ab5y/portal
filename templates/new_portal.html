@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+	{% if session.logged_in %}
+		<form action="{{ url_for('new_portal') }}" method=post class=add-portal>
+			<dl>
+				<dt>Client Company:
+				<dd><input type=text size=30 name=clientName>
+				<dt>Current Address:
+				<dd><textarea name=address rows=3 cols=40></textarea>
+				<dt>Client Contact
+				<dt>First Name:
+				<dd><input type=text size=15 name=firstName>
+				<dt>Last Name:
+				<dd><input type=text size=15 name=lastName>
+				<dt>Email:
+				<dd><input type=email size=20 name=email>
+				<dt>Phone:
+				<dd><input type=number size=10 name=phone>
+				<dd><input type=submit value=Share>
+      		</dl>
+    	</form>
+  	{% endif %}
+{% endblock %}
