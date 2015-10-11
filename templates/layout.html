@@ -1,18 +1,45 @@
 <!doctype html>
 <title>JLL Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class=page>
-  <h1>JLL Portal</h1>
-  <div class=metanav>
-  {% if not session.logged_in %}
-    <a href="{{ url_for('login') }}">Log In</a>
-  {% else %}
-    <a href="{{ url_for('new_portal') }}">New Portal</a>
-    <a href="{{ url_for('logout') }}">Log Out</a>
-  {% endif %}
-  </div>
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
-  {% block body %}{% endblock %}
+<link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.indigo-blue.min.css">
+<script src="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<style type="text/css">
+div span a{
+  color: rgb(255, 255, 255);
+}
+</style>
+
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+
+<!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title"><a href="{{ url_for('show_portals') }}">Customer Engagement Portal</a></span>
+      <!-- Add spacer to align navigation to the right. -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. Hidden in small screens -->
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+        {% if not session.logged_in %}
+        <a class="mdl-navigation__link" href="{{ url_for('login') }}">Log In</a>
+        {% else %}
+        <a class="mdl-navigation__link" href="{{ url_for('new_portal') }}">New Portal</a>
+        <a class="mdl-navigation__link" href="{{ url_for('logout') }}">Log Out</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+  <main class="mdl-layout__content">
+    <div class="page-content page">
+      <!-- Content goes here -->
+      {% block body %}{% endblock %}
+    </div>
+  </main>
 </div>

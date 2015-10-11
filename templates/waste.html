@@ -1,0 +1,92 @@
+
+
+
+
+<!-- <div class=page> -->
+  <!-- <div class="demo-card-wide mdl-card">
+      <!-- <div class="mdl-card__title"> -->
+      <!-- <h2 class="mdl-card__title-text"> --><!-- </h1> -->
+    <!-- </div>
+  </div> -->
+  <!-- <div class="mdl-card__actions mdl-card--border"> --> <!-- class="metanav md-accent" -->
+    <!-- <a class="mdl-button mdl-button mdl-js-button mdl-js-ripple-effect" href="{{ url_for('show_portals') }}">Home</a>
+  {% if not session.logged_in %}
+    <a class="mdl-button mdl-button mdl-js-button mdl-js-ripple-effect" href="{{ url_for('login') }}">Log In</a>
+  {% else %}
+    <a class="mdl-button mdl-button mdl-js-button mdl-js-ripple-effect" href="{{ url_for('new_portal') }}">New Portal</a>
+    <a class="mdl-button mdl-button mdl-js-button mdl-js-ripple-effect" href="{{ url_for('logout') }}">Log Out</a>
+  {% endif %}
+  </div>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %} -->
+<!-- </div> -->
+
+
+<!-- new_portal -->
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+  <div class=page>
+    <form action="{{ url_for('new_portal') }}" method=post class=add-portal>
+      <fieldset>
+        <legend><span>Client Details</span></legend>
+        <ol>
+          <li>
+            <div class="mdl-textfield mdl-js-textfield">
+              <input class="mdl-textfield__input" type=text size=30 name=clientName id="clientName" />
+              <label class="mdl-textfield__label" for="clientName">Client Company</label>
+            </div>
+          </li>
+        </ol>
+      </fieldset>
+      <fieldset>
+        <legend><span>Postal Address</span></legend>
+        <ol>
+          <li>
+            <label for="street">Street Address</label>
+            <input id="street" name="street" type="text" />
+          </li>
+          <li>
+            <label for=" suburb">Suburb</label>
+            <input id="suburb" name="suburb" type="text" />
+          </li>
+          <li>
+            <label for="state">State</label>
+            <input id="state" name="state" type="text" />
+          </li>
+          <li>
+            <label for="postcode">Postcode</label>
+            <input id="postcode" name="postcode" type="text" />
+          </li>
+        </ol>
+      </fieldset>
+      <fieldset>
+        <legend><span>Client Contact Details</span></legend>
+        <ol>
+          <li>
+            <label for="firstName">First Name</label>
+            <input type=text size=15 name=firstName id="address" />
+          </li>
+          <li>
+            <label for="lastName">Last Name</label>
+            <input type=text size=15 name=lastName id="lastName">
+          </li>
+          <li>
+            <label for="email">Email</label>
+            <input type=email size=20 name=email id="email">
+          </li>
+          <li>
+            <label for="phone">Phone</label>
+            <input type=number size=10 name=phone id="phone">
+          </li>
+        </ol>
+      </fieldset>
+      <fieldset class=submit>
+        <input type=submit class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" value=Create>
+          </fieldset>
+      </form>
+    </div>
+    {% endif %}
+{% endblock %}

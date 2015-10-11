@@ -1,23 +1,174 @@
 {% extends "layout.html" %}
 {% block body %}
-	{% if session.logged_in %}
-		<form action="{{ url_for('new_portal') }}" method=post class=add-portal>
-			<dl>
-				<dt>Client Company:
-				<dd><input type=text size=30 name=clientName>
-				<dt>Current Address:
-				<dd><textarea name=address rows=3 cols=40></textarea>
-				<dt>Client Contact
-				<dt>First Name:
-				<dd><input type=text size=15 name=firstName>
-				<dt>Last Name:
-				<dd><input type=text size=15 name=lastName>
-				<dt>Email:
-				<dd><input type=email size=20 name=email>
-				<dt>Phone:
-				<dd><input type=number size=10 name=phone>
-				<dd><input type=submit value=Share>
-      		</dl>
-    	</form>
-  	{% endif %}
+<script type="text/javascript">
+	$(function(){
+		$('#btnUpload').on('click', function(){
+			$('#clientPic').click();
+			setInterval(intervalFunc, 1);
+			return false;
+		});
+		$('input[name="clientPic"]').change(function() {
+			var filename = $(this).val().split('\\').pop();
+			$('#selectedFilename').text(filename);
+		})
+		var lastValue = '';
+		//keyup change paste mouseup
+		$( "input[type='text']" ).on('input', function() {
+			if($( this ).attr('id') == 'clientName') {
+				if($( this ).val().length > 0)
+					$("#btnNext1").removeClass("mdl-button--disabled invisible");
+				else
+					$("#btnNext1").addClass("mdl-button--disabled invisible");
+			}
+
+			else if($( this ).hasClass('addressField')){
+				if(($('#street').val().length > 0)
+					&& ($('#suburb').val().length > 0)
+					&& ($('#state').val().length > 0)
+					&& ($('#postcode').val().length > 0))
+					$("#btnNext2").removeClass("mdl-button--disabled invisible");
+				else
+					$("#btnNext2").addClass("mdl-button--disabled invisible");
+			}
+		});
+		$( "a" ).click(function() {
+			if($( this ).attr('id') == 'btnNext1') {
+				console.log("comes till here");
+				$('#clientDetailsTab').removeClass('is-active');
+				$('#client-detail-panel').removeClass('is-active');
+				$('#clientAddressTab').removeClass('invisible').addClass('is-active');
+				$('#client-address-panel').addClass('is-active');
+			}
+			else if($( this ).attr('id') == 'btnNext2') {
+				$('#clientAddressTab').removeClass('is-active');
+				$('#client-address-panel').removeClass('is-active');
+				$('#clientContactTab').removeClass('invisible').addClass('is-active');
+				$('#client-contact-panel').addClass('is-active');
+			}
+			else if($( this ).attr('id') == 'btnBack2') {
+				$('#clientAddressTab').removeClass('is-active');
+				$('#client-address-panel').removeClass('is-active');
+				$('#clientDetailsTab').addClass('is-active');
+				$('#client-detail-panel').addClass('is-active');
+			}
+			else if($( this ).attr('id') == 'btnBack3') {
+				$('#clientContactTab').removeClass('is-active');
+				$('#client-contact-panel').removeClass('is-active');
+				$('#clientAddressTab').addClass('is-active');
+				$('#client-address-panel').addClass('is-active');
+			}
+		});
+	});
+</script>
+{% if session.logged_in %}
+	<div class="mdl-grid">
+		<div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp">
+			<div class="mdl-card__title"></div>
+			<form action="{{ url_for('new_portal') }}" method=post class=add-portal enctype=multipart/form-data>
+				<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+					<div class="mdl-tabs__tab-bar">
+						<a href="#client-detail-panel" class="mdl-tabs__tab is-active" id="clientDetailsTab">Client Details</a>
+						<a href="#client-address-panel" class="mdl-tabs__tab invisible" id="clientAddressTab">Client Address</a>
+						<a href="#client-contact-panel" class="mdl-tabs__tab invisible" id="clientContactTab">Client Contact Details</a>
+					</div>
+					<div class="mdl-tabs__panel is-active" id="client-detail-panel">
+						<fieldset>
+							<ol>
+								<li>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<input class="mdl-textfield__input" type=text size=30 name=clientName id="clientName" />
+										<label class="mdl-textfield__label" for="clientName">Client Company Name</label>
+									</div>
+								</li>
+								</ol><ol>
+								<li>
+									<div>
+										<input type=button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" id="btnUpload" value="Upload Company Logo">
+										<input class="invisible" type=file name=clientPic id="clientPic" accept="image/x-png, image/gif, image/jpeg, image/jpg">
+									</div>
+									<div>
+										<label id="selectedFilename"></label>
+									</div>
+								</li>
+							</ol>
+						</fieldset>
+						<div class="mdl-card__actions mdl-card--border">
+							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--disabled invisible" id="btnNext1">Next</a>
+						</div>
+					</div>
+					<div class="mdl-tabs__panel" id="client-address-panel">
+						<fieldset>
+							<ol>
+								<li>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<input class="mdl-textfield__input addressField"  id="street" name="street" type="text" />
+										<label class="mdl-textfield__label"  for="street">Street Address</label>
+									</div>
+								</li>
+								<li>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<label class="mdl-textfield__label" for=" suburb">Suburb</label>
+										<input class="mdl-textfield__input addressField" id="suburb" name="suburb" type="text" />
+									</div>
+								</li>
+								<li>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<label class="mdl-textfield__label" for="state">State</label>
+										<input class="mdl-textfield__input addressField" id="state" name="state" type="text" />
+									</div>
+								</li>
+								<li>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<label class="mdl-textfield__label" for="postcode">Postcode</label>
+										<input class="mdl-textfield__input addressField" id="postcode" name="postcode" type="text" pattern="-?[0-9]*(\.[0-9]+)?" size=6/>
+										<span class="mdl-textfield__error">Input is not a number!</span>
+									</div>
+								</li>
+							</ol>
+						</fieldset>
+						<div class="mdl-card__actions mdl-card--border">
+							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="btnBack2">Back</a>
+							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--disabled invisible" id="btnNext2">Next</a>
+						</div>
+					</div>
+					<div class="mdl-tabs__panel" id="client-contact-panel">
+						<fieldset>
+							<ol>
+								<li>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<label class="mdl-textfield__label" for="firstName">First Name</label>
+										<input class="mdl-textfield__input" type=text size=15 name=firstName id="address" />
+									</div>
+								</li>
+								<li>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<label class="mdl-textfield__label" for="lastName">Last Name</label>
+										<input class="mdl-textfield__input" type=text size=15 name=lastName id="lastName">
+									</div>
+								</li>
+								<li>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<label class="mdl-textfield__label" for="email">Email</label>
+										<input class="mdl-textfield__input" type=email size=20 name=email id="email">
+									</div>
+								</li>
+								<li>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<label class="mdl-textfield__label" for="phone">Phone</label>
+										<input class="mdl-textfield__input" type=text size=10 name=phone id="phone" pattern="-?[0-9]*(\.[0-9]+)?" size=10>
+										<span class="mdl-textfield__error">Input is not a number!</span>
+									</div>
+								</li>
+							</ol>
+						</fieldset>
+						<div class="mdl-card__actions mdl-card--border">
+							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="btnBack3">Back</a>
+							<input type=submit class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" value=Create>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endif %}
 {% endblock %}

@@ -1,11 +1,44 @@
 {% extends "layout.html" %}
 {% block body %}
-  	<ul class=portals>
-  	{% for portal in portals %}
-    	<li><h2>{{ portal.name }}</h2>
-    		{{ portal.firstName+' '+portal.lastName+' '+portal.email }}
-  	{% else %}
-    	<li><em>Unbelievable.  No portals here so far</em>
-  	{% endfor %}
-	</ul>
+	<script type="text/css">
+	.mdl-grid {
+		max-width: 600px;
+	}
+	.profile-card-square.mdl-card {
+		max-width: 120px;
+		max-height: 120px;
+	}
+
+	.mdl-card__media {
+		margin: 0;
+	}
+	.mdl-card__media > img {
+		max-width: 100%;
+	}
+	.mdl-card__actions {
+		display: flex;
+		box-sizing:border-box;
+		align-items: center;
+	}
+	.mdl-card__actions > .mdl-button--icon {
+		margin-right: 3px;
+		margin-left: 3px;
+	}
+	</script>
+	<div class="mdl-grid">
+		{% for portal in portals %}
+		<div class="profile-card-square mdl-card mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--12-col-phone mdl-shadow--2dp">
+			<div class="mdl-card__media">
+				<a href="{{ url_for('portal', id=portal.id ) }}">
+					<img src="/static/Images/{{ portal["imgFilename"] }}" alt="" />
+				</a>
+			</div>
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text"><a href="{{ url_for('portal', id=portal.id ) }}">{{ portal.name }}</a></h2>
+			</div>
+		</div>
+		{% else %}
+		<em>Unbelievable.  No portals here so far</em>
+		{% endfor %}
+	</div>
 {% endblock %}

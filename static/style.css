@@ -1,17 +1,73 @@
 body            { font-family: sans-serif; background: #eee; }
-a, h1, h2       { color: #377ba8; }
+a, h1, h2       { color: #377ba8; text-decoration: none;}
 h1, h2          { font-family: 'Georgia', serif; margin: 0; }
 h1              { border-bottom: 2px solid #eee; }
 h2              { font-size: 1.2em; }
+fieldset {
+	/*float: left;*/
+	clear: both;
+	width: 100%;
+	margin: 0 0 -1em 0;
+	padding: 0 0 1em 0;
+	border-style: none;
+	border-top: 1px solid #BFBAB0;
+	/*background-color: #F2EFE9;*/
+}
+legend {
+	margin-left: 1em;
+	color: #000000;
+	font-weight: bold;
+}
+legend span {
+	/*position: absolute;*/
+	/*margin-top: 0.5em;*/
+	/*font-size: 135%;*/
+}
+fieldset ol {
+	padding: 0 0 0 2em;
+	list-style: none;
+}
+ul {
+	padding: 0 1em 0 1em;
+	list-style: none;
+}
+fieldset li div {
+	float: left;
+	clear: left;
+	width: 100%;
+	padding-bottom: 1em;
+}
+fieldset.submit {
+	float: none;
+	width: auto;
+	border: 0 none #FFF;
+	padding-left: 12em;
+}
+label {
+	float:left;
+	width: 10em;
+	margin-right: 1em;
+	text-align: right;
+}
+img {
+	max-width:100%;
+	max-height:100%;
+	height: auto;
+	width: auto\9; /* ie8 */
+}
+td {
+	border: 1px;
+}
 
-.page           { margin: 2em auto; width: 35em; border: 5px solid #ccc;
-                  padding: 0.8em; background: white; }
+.page           { margin: 2em auto; width: 65em; /*border: 5px solid #ccc;*/
+                  /*padding: 0.8em;*/ background: white;}
+.mdl-layout__content {background: white;}
 .entries        { list-style: none; margin: 0; padding: 0; }
 .entries li     { margin: 0.8em 1.2em; }
 .entries li h2  { margin-left: -1em; }
 .add-entry      { font-size: 0.9em; border-bottom: 1px solid #ccc; }
 .add-entry dl   { font-weight: bold; }
-.metanav        { text-align: right; font-size: 0.8em; padding: 0.3em;
+.metanav        { /*text-align: right; font-size: 0.8em;*/ padding: 0.3em;
                   margin-bottom: 1em; background: #fafafa; }
 .flash          { background: #cee5F5; padding: 0.5em;
                   border: 1px solid #aacbe2; }

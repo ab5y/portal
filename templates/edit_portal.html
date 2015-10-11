@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% block body %}
+<style type="text/css">
+.imgParent div {
+	float: left;
+}
+.action-input-left {
+	/*margin-right: 15px;*/
+}
+.action-input-right {
+	float: right;
+}
+.img-child-right {
+	margin-top: 10%;
+}
+</style>
+<script type="text/javascript">
+$(function(){
+	$('#btnUpload').on('click', function(){
+		$('#clientPic').click();
+		setInterval(intervalFunc, 1);
+		return false;
+	});
+
+	$('#btnc')
+
+	$('input[name="clientPic"]').change(function() {
+		var filename = $(this).val().split('\\').pop();
+		$('#selectedFilename').text(filename);
+	})
+
+	$(window).resize(function(){
+		if($(window).width() < 800)
+			$('#imgChildRight').removeClass('img-child-right');
+		else{
+			$('#imgChildRight').addClass('img-child-right');
+		}
+	});
+
+	$('#clientPic').on('change', function(){
+		var reader = new FileReader();
+		reader.onload = function (e) {
+			$('#imgPreview').attr('src', e.target.result);
+		}
+		reader.readAsDataURL(this.files[0]);
+	});
+});
+</script>
+{% if session.logged_in %}
+	<div class="mdl-grid">
+		<div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--6-col-tablet mdl-cell--2-col-phone mdl-shadow--2dp">
+			<form action="{{ url_for('edit_portal', id= portal.id ) }}" method=post class=add-portal enctype=multipart/form-data>
+				<div class="mdl-card__supporting-text">
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type=text size=30 name=clientName id="clientName" value="{{ portal["name"] }}"/>
+						<label class="mdl-textfield__label" for="clientName">Client Company Name</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type=text rows="4" name=address id="address" value="{{ portal["address"] }}"/>
+						<label class="mdl-textfield__label" for="clientName">Client Company Address</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type=text size=10 name=firstName id="clientFirstName" value="{{ portal["firstName"] }}"/>
+						<label class="mdl-textfield__label" for="clientName">Client Contact First Name</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type=text size=10 name=lastName id="clientLastName" value="{{ portal["lastName"] }}"/>
+						<label class="mdl-textfield__label" for="clientName">Client Contact Last Name</label>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type=text size=10 name=phone id="clientPhone" pattern="-?[0-9]*(\.[0-9]+)?" value="{{ portal["phone"] }}"/>
+						<label class="mdl-textfield__label" for="clientName">Client Contact Phone</label>
+						<span class="mdl-textfield__error">Input is not a number!</span>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type=text size=30 name=email id="clientEmail" value="{{ portal["email"] }}"/>
+						<label class="mdl-textfield__label" for="clientName">Client Contact Email</label>
+					</div>
+					<div class="imgParent">
+						<div>
+							<img src="/static/Images/{{ portal["imgFilename"] }}" id="imgPreview" class="img-thumbnail" alt="" width="256" height="236">
+						</div>
+						<div class="img-child-right" id="imgChildRight">
+							<ul>
+								<li>
+									<input type=button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" id="btnUpload" value="Change Company Logo">
+									<input class="invisible" type=file name=clientPic id="clientPic" accept="image/x-png, image/gif, image/jpeg, image/jpg" value="{{ portal["imgFilename"] }}">
+								</li>
+								<li>
+									<label name=selectedFilename id="selectedFilename">{{ portal["imgFilename"] }}</label>
+								</li>
+							</ul>
+							<!-- <br> -->
+						</div>
+					</div>
+				</div>
+				<div class="mdl-card__actions mdl-card--border">
+					<input type=submit class="action-input-left mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" value="Save Changes">
+					<a href="{{ url_for('portal', id=portal.id ) }}" class="action-input-right mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">Cancel</a>
+				</div>
+			</form>
+		</div>
+	</div>	
+{% endif %}
+{% endblock %}
