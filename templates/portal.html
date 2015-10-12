@@ -5,26 +5,33 @@ $(function() {
 	$('#btnEdit').click(function() {
 		location.href = "{{ url_for('edit_portal', id=portal.id ) }}";
 	});
+
+	$('.map-tab').click(function() {
+		//loadScript();
+		initialize();
+	})
+
 	$('.rating-button').click(function() {
 		$( this ).toggleClass("mdl-button--colored")
 		$( this ).siblings('button').removeClass("mdl-button--colored")
 		// ((a < b) ? 2 : 3);
-		tableAction({like: (($(this).hasClass('like-button')) ? 'like' : (($(this).hasClass('dislike-button')) ? 'dislike' : 'none'))});
+		// var id=  $(this).parent().prev('.hidden-field').find("input[name=propId]").val();
+		tableAction({clientId: {{portal.id}}, propId: $(this).closest('tr').find("input[name=propId]").val(), like: (($(this).hasClass('like-button')) ? '1' : (($(this).hasClass('dislike-button')) ? '0' : 'none'))});
 	});
 	$('.request-checkbox').click(function() {
 		$( this ).toggleClass("hidden");
 		$( this ).siblings('button').toggleClass("hidden");
-		tableAction({request: (($(this).hasClass('checked')) ? 0 : 1)});
+		tableAction({clientId: {{portal.id}}, propId: $(this).closest('tr').find("input[name=propId]").val(), request: (($(this).hasClass('checked')) ? 0 : 1)});
 	});
 	$('.comment-box').change(function() {
-		tableAction({comment: $(this).val()});
+		tableAction({clientId: {{portal.id}}, propId: $(this).closest('tr').find("input[name=propId]").val(), comment: $(this).val()});
 	});
 });
 
 function tableAction(data){
 	$.ajax({
 		method: "POST",
-		url: "{{ url_for('testing') }}",	
+		url: "{{ url_for('table_ajax') }}",	
 		data: JSON.stringify(data, null, '\t'),
         contentType: 'application/json;charset=UTF-8',
         success: function(result) {
@@ -38,21 +45,22 @@ function tableAction(data){
 		//alert( "Request failed: " + textStatus );
 	});
 }
-</script>
-<script src="https://maps.googleapis.com/maps/api/js"></script>
-<script type="text/javascript">
-	function initialize() {
-		var mapCanvas = document.getElementById('map');
-		var mapOptions = {
-			center: new google.maps.LatLng(44.5403, -78.5463),
-			zoom: 8,
-			mapTypeId: google.maps.MapTypeId.ROADMAP
-		}
-		var map = new google.maps.Map(mapCanvas, mapOptions);
+function initialize() {
+	var mapCanvas = document.getElementById('map');
+	var mapOptions = {
+		center: new google.maps.LatLng(44.5403, -78.5463),
+		zoom: 5,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
 	}
-	google.maps.event.addDomListener(window, 'load', initialize);
+	var map = new google.maps.Map(mapCanvas, mapOptions);
+}
+// google.maps.event.addDomListener(window, 'load', initialize);
+// function loadScript() {
+//   var script = document.createElement("script");
+//   script.src = "https://maps.googleapis.com/maps/api/js?v=3.20?callback=initialize";
+//   document.body.appendChild(script);
+// }
 </script>
-
 <style type="text/css">
 .profile-card-wide > .mdl-card__title {
 	color: #fff;
@@ -69,7 +77,11 @@ td > img {
 	width: auto; /*500px;*/
 	height: 400px;
 	overflow: hidden;
+	max-width:none;
 	/*background-color: #CCC;*/
+}
+#map img{
+	max-width:none;
 }
 </style>
 	<div class="mdl-gird">
@@ -110,7 +122,7 @@ td > img {
 				<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 					<div class="mdl-tabs__tab-bar">
 						<a href="#listings-panel" class="mdl-tabs__tab is-active">Listings</a>
-						<a href="#map-panel" class="mdl-tabs__tab">Map View</a>
+						<a href="#map-panel" class="mdl-tabs__tab map-tab">Map View</a>
 						<a href="#compare-panel" class="mdl-tabs__tab">Compare Selections</a>
 					</div>
 
@@ -128,45 +140,50 @@ td > img {
 							</thead>
 							<tbody>
 								{% for prop in properties %}
-								<tr>
-									<td>
-										<div class="mdl-card__media">
-											<img src={{ prop["imagepath"] }} alt="" width="100%" height="auto"/>
-										</div>
-									</td>
-									<td style="word-wrap: break-all;white-space:normal;">
-										<div class="mdl-card__supporting-text">
-											{{ prop["address"] }}
-										</div>
-									</td>
-									<td style="word-wrap: break-all;white-space:normal;">
-										<div class="mdl-card__supporting-text">
-											{{ prop["description"] }}
-										</div>
-									</td>
-									<td>
-										<div class="mdl-textfield mdl-js-textfield">
-											<textarea class="mdl-textfield__input comment-box" type="text" rows= "3" id="comment" >{{ prop["comment"] }}</textarea>
-										</div>
-									</td>
-									<td>
-										<!-- Colored icon button -->
-										<button class="rating-button like-button mdl-button mdl-js-button mdl-button--icon">
-											<i class="material-icons">thumb_up</i>
-										</button>
-										<button class="rating-button dislike-button mdl-button mdl-js-button mdl-button--icon">
-											<i class="material-icons">thumb_down</i>
-										</button>
-									</td>
-									<td style="text-align:center">
-										<button class="request-checkbox unchecked mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-											<i class="material-icons">check_box_outline_blank</i>
-										</button>
-										<button class="request-checkbox checked hidden mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-											<i class="material-icons">check_box</i>
-										</button>
-									</td>
-								</tr>
+									{% for propval in propvals %}
+										{% if propval["propertyId"] == prop["id"] %}
+											<tr>
+												<td class="hidden-field">
+													<div class="mdl-card__media">
+														<img src={{ prop["imagepath"] }} alt="" width="100%" height="auto"/>
+													</div>
+													<input type="hidden" name="propId" value={{ prop["id"] }}>
+												</td>
+												<td style="word-wrap: break-all;white-space:normal;">
+													<div class="mdl-card__supporting-text">
+														{{ prop["address"] }}
+													</div>
+												</td>
+												<td style="word-wrap: break-all;white-space:normal;">
+													<div class="mdl-card__supporting-text">
+														{{ prop["description"] }}
+													</div>
+												</td>
+												<td>
+													<div class="mdl-textfield mdl-js-textfield">
+														<textarea class="mdl-textfield__input comment-box" type="text" rows= "3" id="comment" >{{ propval["comment"] }}</textarea>
+													</div>
+												</td>
+												<td>
+													<!-- Colored icon button -->
+													<button class="rating-button like-button mdl-button mdl-js-button mdl-button--icon {% if propval["rating"] == 1 %} mdl-button--colored {% endif %}">
+														<i class="material-icons">thumb_up</i>
+													</button>
+													<button class="rating-button dislike-button mdl-button mdl-js-button mdl-button--icon {% if propval["rating"] == 0 %} mdl-button--colored {% endif %}">
+														<i class="material-icons">thumb_down</i>
+													</button>
+												</td>
+												<td style="text-align:center">
+													<button class="request-checkbox unchecked mdl-button mdl-js-button mdl-button--icon mdl-button--colored {% if propval["showing"] == 1 %} hidden {% endif %}">
+														<i class="material-icons">check_box_outline_blank</i>
+													</button>
+													<button class="request-checkbox checked mdl-button mdl-js-button mdl-button--icon mdl-button--colored {% if propval["showing"] == 0 %} hidden {% endif %}">
+														<i class="material-icons">check_box</i>
+													</button>
+												</td>
+											</tr>
+										{% endif %}
+									{% endfor %}
 								{% else %}
 								<em>Unbelievable.  No properties here so far</em>
 								{% endfor %}

@@ -21,8 +21,15 @@ create table property (
 	name text not null,
 	imagepath text,
 	address text not null,
-	description text,
+	description text
+);
+drop table if exists client_property;
+create table client_property (
+	clientId integer not null,
+	propertyId integer not null,
 	comment text,
 	rating boolean,
-	showing boolean not null	
+	showing boolean not null,
+	foreign key(clientId) references client(id),
+	foreign key(propertyId) references property(id)
 );
