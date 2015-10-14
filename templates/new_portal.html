@@ -25,38 +25,22 @@
 				if(($('#street').val().length > 0)
 					&& ($('#suburb').val().length > 0)
 					&& ($('#state').val().length > 0)
-					&& ($('#postcode').val().length > 0))
+					&& ($('#postcode').val().length > 0)) {
 					$("#btnNext2").removeClass("mdl-button--disabled invisible");
+				}
 				else
 					$("#btnNext2").addClass("mdl-button--disabled invisible");
 			}
 		});
 		$( "a" ).click(function() {
-			if($( this ).attr('id') == 'btnNext1') {
-				console.log("comes till here");
-				$('#clientDetailsTab').removeClass('is-active');
-				$('#client-detail-panel').removeClass('is-active');
-				$('#clientAddressTab').removeClass('invisible').addClass('is-active');
-				$('#client-address-panel').addClass('is-active');
-			}
-			else if($( this ).attr('id') == 'btnNext2') {
-				$('#clientAddressTab').removeClass('is-active');
-				$('#client-address-panel').removeClass('is-active');
-				$('#clientContactTab').removeClass('invisible').addClass('is-active');
-				$('#client-contact-panel').addClass('is-active');
-			}
-			else if($( this ).attr('id') == 'btnBack2') {
-				$('#clientAddressTab').removeClass('is-active');
-				$('#client-address-panel').removeClass('is-active');
-				$('#clientDetailsTab').addClass('is-active');
-				$('#client-detail-panel').addClass('is-active');
-			}
-			else if($( this ).attr('id') == 'btnBack3') {
-				$('#clientContactTab').removeClass('is-active');
-				$('#client-contact-panel').removeClass('is-active');
-				$('#clientAddressTab').addClass('is-active');
-				$('#client-address-panel').addClass('is-active');
-			}
+			if($( this ).attr('id') == 'btnNext1')
+				goToTab('client-address', true);
+			else if($( this ).attr('id') == 'btnNext2')
+				goToTab('client-contact', true);
+			else if($( this ).attr('id') == 'btnBack2')
+				goToTab('client-detail');
+			else if($( this ).attr('id') == 'btnBack3')
+				goToTab('client-address');
 		});
 	});
 </script>
@@ -67,9 +51,9 @@
 			<form action="{{ url_for('new_portal') }}" method=post class=add-portal enctype=multipart/form-data>
 				<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 					<div class="mdl-tabs__tab-bar">
-						<a href="#client-detail-panel" class="mdl-tabs__tab is-active" id="clientDetailsTab">Client Details</a>
-						<a href="#client-address-panel" class="mdl-tabs__tab invisible" id="clientAddressTab">Client Address</a>
-						<a href="#client-contact-panel" class="mdl-tabs__tab invisible" id="clientContactTab">Client Contact Details</a>
+						<a href="#client-detail-panel" class="mdl-tabs__tab is-active" id="client-detail-tab">Client Details</a>
+						<a href="#client-address-panel" class="mdl-tabs__tab invisible" id="client-address-tab">Client Address</a>
+						<a href="#client-contact-panel" class="mdl-tabs__tab invisible" id="client-contact-tab">Client Contact Details</a>
 					</div>
 					<div class="mdl-tabs__panel is-active" id="client-detail-panel">
 						<fieldset>
@@ -93,7 +77,8 @@
 							</ol>
 						</fieldset>
 						<div class="mdl-card__actions mdl-card--border">
-							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--disabled invisible" id="btnNext1">Next</a>
+							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--disabled invisible"></a>
+							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--disabled invisible right" id="btnNext1">Next</a>
 						</div>
 					</div>
 					<div class="mdl-tabs__panel" id="client-address-panel">
@@ -128,7 +113,7 @@
 						</fieldset>
 						<div class="mdl-card__actions mdl-card--border">
 							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="btnBack2">Back</a>
-							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--disabled invisible" id="btnNext2">Next</a>
+							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--disabled invisible right" id="btnNext2">Next</a>
 						</div>
 					</div>
 					<div class="mdl-tabs__panel" id="client-contact-panel">
@@ -163,7 +148,7 @@
 						</fieldset>
 						<div class="mdl-card__actions mdl-card--border">
 							<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="btnBack3">Back</a>
-							<input type=submit class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" value=Create>
+							<input type=submit class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored right" value=Create>
 						</div>
 					</div>
 				</div>

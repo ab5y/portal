@@ -6,6 +6,12 @@ $(function() {
 		location.href = "{{ url_for('edit_portal', id=portal.id ) }}";
 	});
 
+	$("a[name=addressAnchor]").click(function() {
+		var address = $(this).text();
+		goToTab('map');
+		initialize(address);
+	})
+
 	$('.map-tab').click(function() {
 		initialize();
 	})
@@ -13,8 +19,6 @@ $(function() {
 	$('.rating-button').click(function() {
 		$( this ).toggleClass("mdl-button--colored")
 		$( this ).siblings('button').removeClass("mdl-button--colored")
-		// ((a < b) ? 2 : 3);
-		// var id=  $(this).parent().prev('.hidden-field').find("input[name=propId]").val();
 		tableAction({clientId: {{portal.id}}, propId: $(this).closest('tr').find("input[name=propId]").val(), like: (($(this).hasClass('like-button')) ? '1' : (($(this).hasClass('dislike-button')) ? '0' : 'none'))});
 	});
 	$('.request-checkbox').click(function() {
@@ -44,14 +48,51 @@ function tableAction(data){
 		//alert( "Request failed: " + textStatus );
 	});
 }
-function initialize() {
+
+function initialize(address) {
+	var geocoder = new google.maps.Geocoder();
 	var mapCanvas = document.getElementById('map');
 	var mapOptions = {
 		center: new google.maps.LatLng(44.5403, -78.5463),
-		zoom: 5,
+		zoom: 18,
+		mapTypeControl: true,
+		mapTypeControlOptions: {
+			style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+		},
+		navigationControl: true,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	}
 	var map = new google.maps.Map(mapCanvas, mapOptions);
+	if(geocoder) {
+		geocoder.geocode({
+			'address': address
+		}, function (results, status) {
+			if(status == google.maps.GeocoderStatus.OK) {
+				if(status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+					map.setCenter(results[0].geometry.location);
+
+					var infowindow = new google.maps.InfoWindow({
+						content: '<b>'+address+'</b>',
+						size: new google.maps.Size(150, 50)
+					});
+
+					var marker = new google.maps.Marker({
+						position: results[0].geometry.location,
+						map: map,
+						title: address
+					});
+
+					google.maps.event.addListener(marker, 'click', function() {
+						infowindow.open(map, marker);
+					});
+				} else {
+					alert("No results found!");
+				}
+			} else {
+				alert("Geocode failed because "+status);
+			}
+		});
+	}
 	setTimeout(function () {
 		google.maps.event.trigger(map, 'resize');
 		map.setCenter(mapOptions.center);
@@ -59,7 +100,7 @@ function initialize() {
 }
 </script>
 <style type="text/css">
-.profile-card-wide > .mdl-card__title {
+.profile-card-wide > .mdl-card__banner {
 	color: #fff;
 	height: 300px;
 	background: url('/static/Images/{{portal.imgFilename}}') center / cover;
@@ -84,12 +125,13 @@ td > img {
 </style>
 	<div class="mdl-gird">
 		<div class="profile-card-wide mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp">
+			<div class="mdl-card__banner"></div>
 			<div class="mdl-card__title">
 				<h6 class="mdl-card__title-text">{{ portal.name }}</h6>
 			</div>
 			<div class="mdl-card__supporting-text">
 				<fieldset>
-					<ol>
+					<ol class="portal-details">
 						<li>
 							<label>Contact Name</label>
 							<b>{{ portal["firstName"]+' '+portal["lastName"] }}</b>
@@ -98,10 +140,12 @@ td > img {
 							<label>Address</label>
 							<b>{{ portal["address"] }}</b>
 						</li>
+						{% if portal["phone"] %}
 						<li>
 							<label>Phone</label>
 							<b>{{ portal["phone"] }}</b>
 						</li>
+						{% endif %}
 						<li>
 							<label>Email</label>
 							<b>{{ portal["email"] }}</b>
@@ -119,9 +163,9 @@ td > img {
 				<div class="mdl-card__title"><h1 class="mdl-card__title-text">Properties</h1></div>
 				<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 					<div class="mdl-tabs__tab-bar">
-						<a href="#listings-panel" class="mdl-tabs__tab is-active">Listings</a>
-						<a href="#map-panel" class="mdl-tabs__tab map-tab">Map View</a>
-						<a href="#compare-panel" class="mdl-tabs__tab">Compare Selections</a>
+						<a href="#listings-panel" class="mdl-tabs__tab is-active" id="listings-tab">Listings</a>
+						<a href="#map-panel" class="mdl-tabs__tab map-tab" id="map-tab">Map View</a>
+						<a href="#compare-panel" class="mdl-tabs__tab" id="compare-tab">Compare Selections</a>
 					</div>
 
 					<div class="mdl-tabs__panel is-active" id="listings-panel">
@@ -149,7 +193,7 @@ td > img {
 												</td>
 												<td style="word-wrap: break-all;white-space:normal;">
 													<div class="mdl-card__supporting-text">
-														{{ prop["address"] }}
+														<a href="#" name="addressAnchor">{{ prop["address"] }}</a>
 													</div>
 												</td>
 												<td style="word-wrap: break-all;white-space:normal;">
@@ -202,7 +246,8 @@ td > img {
 				</button>
 			</div>
 			<div class="mdl-card__actions mdl-card--border">
-				<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="btnEdit2" href="{{ url_for('edit_portal', id=portal.id ) }}">Edit</a>
+				<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="{{ url_for('show_portals') }}">Back</a>
+				<a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored right" id="btnEdit2" href="{{ url_for('edit_portal', id=portal.id ) }}">Edit</a>
 			</div>
 			{% endif %}
 		</div>

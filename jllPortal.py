@@ -30,6 +30,8 @@ app.config.from_object(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 mail = Mail(app)
 
+# Helper functions
+
 def connect_db():
 	return sqlite3.connect(app.config['DATABASE'])
 
@@ -80,6 +82,19 @@ def query_db(query, args=(), one=False):
 	cur.close()
 	return (rv[0] if rv else None) if one else rv
 
+def allowed_file(filename):
+	return '.' in filename and \
+			filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+def send_mail(message):
+	msg = Message("New portal created for you!",
+					sender="master@portal.com",
+					recipients = [request.form['email']])
+	msg.body = message
+	mail.send(msg)
+
+# Web app functions
+
 @app.before_request
 def before_request():
 	g.db = connect_db()
@@ -128,20 +143,10 @@ def new_portal():
 		g.db.commit()
 
 		flash('New portal was successfully posted')
-		send_mail()
+		message = "Dear "+request.form['firstName']+", \nA portal has been created for you."
+		send_mail(message)
 		return redirect(url_for('show_portals'))
 	return render_template('new_portal.html', error=error)
-
-def allowed_file(filename):
-	return '.' in filename and \
-			filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-def send_mail():
-	msg = Message("New portal created for you!",
-					sender="master@portal.com",
-					recipients = [request.form['email']])
-	msg.body = "Dear Customer, \nA portal has been created for you at blah.blah."
-	mail.send(msg)
 
 @app.route('/portal', methods=['GET', 'POST'])
 def portal():
@@ -154,13 +159,11 @@ def portal():
 		properties = [make_dicts(cur, row) for row in cur.fetchall()]
 		cur = g.db.execute('select * from client_property where clientId='+id)
 		propvals = [make_dicts(cur, row) for row in cur.fetchall()]
-		print propvals
 		return render_template('portal.html', portal=portal, properties=properties, propvals=propvals)
 
 @app.route('/table_ajax', methods=['POST'])
 def table_ajax():
 	if request.method == 'POST':
-		print request.json
 		dump = json.dumps(request.json)
 		data = json.loads(dump)
 		dbArg=''
@@ -177,7 +180,6 @@ def table_ajax():
 
 		g.db.execute('update client_property set '+dbArg+' where clientId=? AND propertyId=?', 
 						(data[jsonArg], data['clientId'], data['propId']))
-		print 'update client_property set ',data[jsonArg],' where clientId=',data['clientId'],' AND propertyId=',data['propId']
 		g.db.commit()
 	return render_template('testing.html')
 
@@ -204,7 +206,8 @@ def edit_portal():
 					(request.form['firstName'], request.form['lastName'], request.form['email'], 
 						request.form['phone'], request.form['address'], id))
 		g.db.commit()
-		send_mail()
+		message = "Dear "+request.form['firstName']+", \nYour portal has been edited."
+		send_mail(message)
 		return redirect(url_for('portal', id=id))
 
 @app.route('/login', methods=['GET', 'POST'])
