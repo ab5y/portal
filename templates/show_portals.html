@@ -27,7 +27,7 @@
 	</script>
 	<div class="mdl-grid">
 		{% for portal in portals %}
-		<div class="profile-card-square mdl-card mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--12-col-phone mdl-shadow--2dp">
+		<div class="profile-card-square mdl-card mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--6-col-phone mdl-shadow--2dp">
 			<div class="mdl-card__media">
 				<a href="{{ url_for('portal', id=portal.id ) }}">
 					<img src="/static/Images/{{ portal["imgFilename"] }}" alt="" />

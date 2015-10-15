@@ -7,6 +7,7 @@ create table client (
 );
 drop table if exists clientContact;
 create table clientContact (
+	id integer primary key autoincrement,
 	firstName text not null,
 	lastName text not null,
 	email text not null,
@@ -15,16 +16,32 @@ create table clientContact (
 	clientId integer,
 	foreign key(clientId) references client(id)
 );
+drop table if exists clientRequirements;
+create table clientRequirements (
+	id integer primary key autoincrement,
+	RSF integer not null,
+	budget integer,
+	employees integer,
+	market text,
+	clientId integer not null,
+	foreign key(clientId) references client(id)
+
+);
 drop table if exists property;
 create table property (
 	id integer primary key autoincrement,
 	name text not null,
 	imagepath text,
 	address text not null,
-	description text
+	description text,
+	RSF integer not null,
+	rent integer not null,
+	employees integer,
+	market text
 );
 drop table if exists client_property;
 create table client_property (
+	id integer primary key autoincrement,
 	clientId integer not null,
 	propertyId integer not null,
 	comment text,

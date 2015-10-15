@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f # Don't interfere with static files
+RewriteRule ^(.*)$ /public_html/jll/cgi-bin/portal.cgi/$1 [L]

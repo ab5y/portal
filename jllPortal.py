@@ -42,34 +42,6 @@ def init_db():
 		db.commit()
 
 def stuff():
-	# for client in query_db('select * from property'):
-	# 	print client[1], 'has the id', client[0]
-	# g.db.execute('insert into property (name, imagepath, address, description) values (?, ?, ?, ?)',
-	# 				(	'Empire State Building', 
-	# 					'/static/Images/Realty/Empire_State_Building.jpg', 
-	# 					'350 5th Ave, New York, NY 10118, United States', 
-	# 					'The Empire State Building is a 102-story skyscraper located in Midtown Manhattan, New York City, on Fifth Avenue between West 33rd and 34th Streets.'
-	# 				)
-	# 			)
-	# g.db.execute('insert into property (name, imagepath, address, description) values (?, ?, ?, ?)',
-	# 				(	'John Hancock Center', 
-	# 					'/static/Images/Realty/John_Hancock_Center_2.jpg', 
-	# 					'875 North Michigan Avenue, Chicago, Illinois, United States', 
-	# 					'The John Hancock Center is a 100-story, 1,127-foot (344 m) tall skyscraper at 875 North Michigan Avenue, Chicago, Illinois, United States.'
-	# 				)
-	# 			)
-	# g.db.commit()
-	# for prop in query_db('select * from property'):
-	# 	print prop[1], 'has the id', prop[0]
-	# cur = g.db.execute('select * from client')
-	# clients = [make_dicts(cur, row) for row in cur.fetchall()]
-	# cur = g.db.execute('select * from property') 
-	# properties = [make_dicts(cur, row) for row in cur.fetchall()]
-	# for client in clients:
-	# 	for prop in properties:
-	# 		g.db.execute('insert into client_property values (?, ?, ?, ?, ?)',
-	# 						(client['id'], prop['id'], 'null', 'null', 0))
-	# g.db.commit()
 	pass
 
 def make_dicts(cursor, row):
@@ -107,7 +79,7 @@ def teardown_request(exception):
 
 @app.route('/')
 def show_portals():
-	cur = g.db.execute('select client.name, clientContact.firstName, clientContact.lastName, clientContact.email, client.id, client.imgFilename from client, clientContact where client.id = clientContact.clientId order by id desc')
+	cur = g.db.execute('select client.name, clientContact.firstName, clientContact.lastName, clientContact.email, client.id, client.imgFilename from client, clientContact where client.id = clientContact.clientId order by client.id desc')
 	portals = [dict(name=row[0], firstName=row[1], lastName=row[2], email=row[3], id=row[4], imgFilename=row[5]) for row in cur.fetchall()]
 	return render_template('show_portals.html', portals=portals)
 
