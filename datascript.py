@@ -17,36 +17,93 @@ def connect_db():
 def get_filepath(filename):
 	return os.path.join(DATA_FOLDER, filename)
 
+def insert_into(table, fields, values, data):
+	cur.execute('insert into '+table+' '+fields+' values '+values, data)
+	cur.execute('select max(id) FROM '+table)
+	return cur.fetchone()[0]
+
+def read_from(filename, sheet):
+	wb = load_workbook(filename = get_filepath(filename), read_only=True)
+	return wb[sheet]
+
+def write_to(filename):
+	return load_workbook(filename=get_filepath(filename))
+
+def create(table, fields, values, worksheet, header):
+	ids = array('i')
+	for row in worksheet.rows:
+		data = []
+		if row[0].value != header:
+			for cell in row:
+				data.append(cell.value)
+			ids.append(insert_into(table, fields, values, data))
+	return ids
+
+def write_column(worksheet, data, column, rowOffset):
+	for i, entry in enumerate(data):
+		worksheet.cell(row=i+rowOffset, column=column).value = entry
+
+def create_clients():
+	table = 'client'
+	fields = '(name, imgFilename, industry)'
+	values = '(?, ?, ?)'
+	ws = read_from('Company.xlsx', 'Sheet1')
+	return create(table, fields, values, ws, 'name')
+
+def create_client_contacts(clientIds):
+	table = 'clientContact'
+	fields = '(firstName, lastName, email, phone, address, clientId)'
+	values = '(?,?,?,?,?,?)'
+	wb = write_to('CompanyContact.xlsx') 
+	ws = wb['Sheet1']	
+	write_column(ws, clientIds, 6, 2)
+	wb.save(get_filepath('CompanyContact.xlsx'))
+	return create(table, fields, values, ws, 'firstName')
+
+def create_client_requirements(clientIds):
+	table = 'clientRequirements'
+	fields = '(RSF, budget, employees, market, clientId)'
+	values = '(?,?,?,?,?)'
+	wb = write_to('CompanyRequirements.xlsx')
+	ws = wb['Sheet1']
+	write_column(ws, clientIds, 5, 2)
+	wb.save(get_filepath('CompanyRequirements.xlsx'))
+	return create(table, fields, values, ws, 'RSF')
+
+def create_property():
+	table = 'property'
+	fields = '(name, imagepath, address, description, size, rent, employees, market	)'
+	values = '(?,?,?,?,?,?,?,?)'
+	ws = read_from('Property.xlsx', 'Sheet1')
+	return create(table, fields, values, ws, 'name')
+
+def create_client_property(clientIds, propertyIds):
+	table = 'client_property'
+	fields = '(clientId, propertyId, comment, rating, showing)'
+	values = '(?,?,?,?,?)'
+	wb = write_to('CompanyProperty.xlsx')
+	ws = wb['Sheet1']
+	i = 0
+	for clientId in clientIds:
+		for propertyId in propertyIds:
+			ws.cell(row=i+2, column=1).value = clientId
+			ws.cell(row=i+2, column=2).value = propertyId
+			ws.cell(row=i+2, column=5).value = 0
+			i = i+1
+	wb.save(get_filepath('CompanyProperty.xlsx'))
+	return create(table, fields, values, ws, 'clientId')
+
 conn = connect_db()
 cur = conn.cursor()
 
 init_db()
 
-ids = array('i')
 
-wb_ro = load_workbook(filename = get_filepath('Company.xlsx'), read_only=True)
-ws_ro = wb_ro['Sheet1']
 
-wb_wo = load_workbook(filename=get_filepath('CompanyContact.xlsx'))
-ws_wo = wb_wo['Sheet1']
-
-for row in ws_ro.rows:
-	if row[0].value != 'name':
-		cur.execute('insert into client (name, imgFilename, industry) values (?, ?, ?)',
-					(row[0].value, row[1].value, row[2].value))
-		cur.execute('select max(id) FROM client')
-		clientId = cur.fetchone()[0]
-		ids.append(clientId)
-		print "Created client with id ", clientId
-
-for i, id in enumerate(ids):
-	ws_wo.cell(row=i+2, column=6).value = id
-wb_wo.save(get_filepath('CompanyContact.xlsx'))
-
-for row in ws_wo.rows:
-	if row[0].value != 'firstName':
-		cur.execute('insert into clientContact (firstName, lastName, email, phone, address, clientId) values (?,?,?,?,?,?)',
-					(row[0].value, row[1].value, row[2].value, row[3].value, row[4].value, row[5].value))
+clientIds = create_clients()
+create_client_contacts(clientIds)
+propertyIds = create_property()
+create_client_property(clientIds, propertyIds)
 
 # Save (commit) the changes
 conn.commit()
@@ -55,31 +112,37 @@ conn.commit()
 # Just be sure any changes have been committed or they will be lost.
 conn.close()
 
-# for client in query_db('select * from property'):
-	# 	print client[1], 'has the id', client[0]
-	# g.db.execute('insert into property (name, imagepath, address, description) values (?, ?, ?, ?)',
-	# 				(	'Empire State Building', 
-	# 					'/static/Images/Realty/Empire_State_Building.jpg', 
-	# 					'350 5th Ave, New York, NY 10118, United States', 
-	# 					'The Empire State Building is a 102-story skyscraper located in Midtown Manhattan, New York City, on Fifth Avenue between West 33rd and 34th Streets.'
-	# 				)
-	# 			)
-	# g.db.execute('insert into property (name, imagepath, address, description) values (?, ?, ?, ?)',
-	# 				(	'John Hancock Center', 
-	# 					'/static/Images/Realty/John_Hancock_Center_2.jpg', 
-	# 					'875 North Michigan Avenue, Chicago, Illinois, United States', 
-	# 					'The John Hancock Center is a 100-story, 1,127-foot (344 m) tall skyscraper at 875 North Michigan Avenue, Chicago, Illinois, United States.'
-	# 				)
-	# 			)
-	# g.db.commit()
-	# for prop in query_db('select * from property'):
-	# 	print prop[1], 'has the id', prop[0]
-	# cur = g.db.execute('select * from client')
-	# clients = [make_dicts(cur, row) for row in cur.fetchall()]
-	# cur = g.db.execute('select * from property') 
-	# properties = [make_dicts(cur, row) for row in cur.fetchall()]
-	# for client in clients:
-	# 	for prop in properties:
-	# 		g.db.execute('insert into client_property values (?, ?, ?, ?, ?)',
-	# 						(client['id'], prop['id'], 'null', 'null', 0))
-	# g.db.commit()
+def show_tables():
+	conn = connect_db()
+	cur = conn.cursor()
+	print '****************************************'
+	print '*****************Client*****************'
+	print '****************************************'
+	cur.execute('select * from client')
+	for row in cur.fetchall():
+		print row
+	print '****************************************'
+	print '*************Client Contact*************'
+	print '****************************************'
+	cur.execute('select * from clientContact')
+	for row in cur.fetchall():
+		print row
+	print '****************************************'
+	print '**********Client Requirements***********'
+	print '****************************************'
+	cur.execute('select * from clientRequirements')
+	for row in cur.fetchall():
+		print row
+	print '****************************************'
+	print '****************Property****************'
+	print '****************************************'
+	cur.execute('select * from property')
+	for row in cur.fetchall():
+		print row
+	print '****************************************'
+	print '************Client Property*************'
+	print '****************************************'
+	cur.execute('select * from client_property')
+	for row in cur.fetchall():
+		print row
+	conn.close()

@@ -34,7 +34,7 @@ create table property (
 	imagepath text,
 	address text not null,
 	description text,
-	RSF integer not null,
+	size integer not null,
 	rent integer not null,
 	employees integer,
 	market text

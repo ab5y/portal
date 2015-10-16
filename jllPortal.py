@@ -41,9 +41,6 @@ def init_db():
 			db.cursor().executescript(f.read())
 		db.commit()
 
-def stuff():
-	pass
-
 def make_dicts(cursor, row):
 	return dict((cursor.description[idx][0], value) for idx, value in enumerate(row))
 
