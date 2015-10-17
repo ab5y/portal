@@ -31,7 +31,7 @@ $(function() {
 	});
 });
 
-function tableAction(data){
+function tableAction(data) {
 	$.ajax({
 		method: "POST",
 		url: "{{ url_for('table_ajax') }}",	
@@ -123,9 +123,9 @@ td > img {
     max-height: none !important;
 }
 </style>
-<div class=page>
 	<div class="mdl-gird">
-		<div class="profile-card-wide mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp">
+		<div class="mdl-cell mdl-cell--2-col" style="float:left"></div>
+		<div class="profile-card-wide mdl-card mdl-cell mdl-cell--8-col mdl-shadow--2dp">
 			<div class="mdl-card__banner"></div>
 			<div class="mdl-card__title">
 				<h6 class="mdl-card__title-text">{{ portal.name }}</h6>
@@ -252,6 +252,6 @@ td > img {
 			</div>
 			{% endif %}
 		</div>
+		<div class="mdl-cell mdl-cell--1-col" style="float:right"></div>
 	</div>
-</div>
 {% endblock %}

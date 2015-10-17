@@ -46,7 +46,8 @@
 </script>
 {% if session.logged_in %}
 	<div class="mdl-grid">
-		<div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp">
+		<div class="mdl-cell mdl-cell--3-col" style="float:left"></div>
+		<div class="mdl-card mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet mdl-cell--12-col-phone mdl-shadow--2dp">
 			<div class="mdl-card__title"></div>
 			<form action="{{ url_for('new_portal') }}" method=post class=add-portal enctype=multipart/form-data>
 				<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
