@@ -12,46 +12,16 @@
 		color: #000;
 		// height: 176px;
 	}
-	.mdl-card__media > img {
-		max-width: 100%;
-	}
-	.mdl-card__actions {
-		display: flex;
-		box-sizing:border-box;
-		align-items: center;
-	}
-	.mdl-card__actions > .mdl-button--icon {
-		margin-right: 3px;
-		margin-left: 3px;
-	}
-	.container {
-		display: table-cell;
-    	vertical-align: middle;
-	}
-	div#child {
-    	margin: 0 auto;
-	}
-	</script>
-	<script type="text/javascript">
-		$(window).load(function(){
-			$('.container').find('img').each(function(){
-				var imgClass = (this.width/this.height > 1) ? 'wide' : 'tall';
-				$(this).addClass(imgClass);
-			});
-		});
 	</script>
 	<div class="mdl-grid">
 		{% for portal in portals %}
-		<div class="profile-card-square mdl-card mdl-cell mdl-cell--2-col mdl-cell--3-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-			<!-- <div class="container" style="text-align:center">
-				<a href="{{ url_for('portal', id=portal.id ) }}">
-					<img src="/static/Images/{{ portal["imgFilename"] }}" alt="" />
-				</a>
-			</div> -->
-			<div class="mdl-card__title" style="text-align:center;background: url('/static/Images/{{ portal["imgFilename"] }}') bottom 60% right 54% no-repeat;width: 256px;height: 256px;">
-				<h2 class="mdl-card__title-text"><a href="{{ url_for('portal', id=portal.id ) }}">{{ portal.name }}</a></h2>
+		<a href="{{ url_for('portal', id=portal.id ) }}">
+			<div class="profile-card-square mdl-card mdl-cell mdl-cell--2-col mdl-cell--3-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+				<div class="mdl-card__title" style="background: url('/static/Images/{{ portal["imgFilename"] }}') bottom 60% right 54% no-repeat;width: 256px;height: 256px;">
+					<h2 class="mdl-card__title-text"><a href="{{ url_for('portal', id=portal.id ) }}">{{ portal.name }}</a></h2>
+				</div>
 			</div>
-		</div>
+		</a>
 		{% else %}
 		<em>Unbelievable.  No portals here so far</em>
 		{% endfor %}
