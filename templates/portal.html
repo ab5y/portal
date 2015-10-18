@@ -63,7 +63,7 @@ function initialize(address) {
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	}
 	var map = new google.maps.Map(mapCanvas, mapOptions);
-	if(geocoder) {
+	if(geocoder && address) {
 		geocoder.geocode({
 			'address': address
 		}, function (results, status) {
