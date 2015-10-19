@@ -5,8 +5,8 @@
 		max-width: 600px;
 	}
 	.profile-card-square.mdl-card {
-		width: 320px;
-		height: 320px;
+		width: auto;
+		height: auto;
 	}
 	.mdl-card__title {
 		color: #000;
@@ -14,14 +14,9 @@
 	</script>
 	<div class="mdl-grid">
 		{% for portal in portals %}
-		<a href="{{ url_for('portal', id=portal.id ) }}">
-			<div class="profile-card-square mdl-card mdl-cell mdl-cell--2-col mdl-cell--3-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-				<!-- no-repeat center center;background-origin: content-box;background-size: cover; -->
-				<div class="mdl-card__title" style="background: url('/static/Images/{{ portal["imgFilename"] }}') bottom 60% right 54% no-repeat;width: 256px;height: 256px;">
-					<h2 class="mdl-card__title-text"><a href="{{ url_for('portal', id=portal.id ) }}">{{ portal.name }}</a></h2>
-				</div>
+			<div class="profile-card-square mdl-card mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-cell--6-col-phone mdl-shadow--2dp">
+				<a href="{{ url_for('portal', id=portal.id ) }}" style="background: url('/static/Images/{{ portal["imgFilename"] }}') center center no-repeat;width: auto;height: 256px;background-size:contain;display:block;overflow:hidden;text-indent:100%;white-space:nowrap;">{{ portal.name }}</a>
 			</div>
-		</a>
 		{% else %}
 		<em>Unbelievable.  No portals here so far</em>
 		{% endfor %}

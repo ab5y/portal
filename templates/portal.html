@@ -99,11 +99,15 @@ function initialize(address) {
 	}, 100);
 }
 </script>
+
 <style type="text/css">
 .profile-card-wide > .mdl-card__banner {
 	color: #fff;
-	height: 300px;
-	background: url('/static/Images/{{portal.imgFilename}}') center / cover;
+	width="100%"; 
+	height="auto";
+	background: url('/static/Images/{{portal.imgFilename}}'); /* center; / cover;*/
+	background-position:center center;
+	background-repeat: no-repeat;
 }
 td > img {
 	max-width: 100%;
@@ -119,14 +123,14 @@ td > img {
 	/*background-color: #CCC;*/
 }
 #map img {
-    max-width: none !important;
-    max-height: none !important;
+	max-width: none !important;
+	max-height: none !important;
 }
 </style>
 	<div class="mdl-gird">
 		<div class="mdl-cell mdl-cell--2-col" style="float:left"></div>
 		<div class="profile-card-wide mdl-card mdl-cell mdl-cell--8-col mdl-shadow--2dp">
-			<div class="mdl-card__banner"></div>
+			<div class="mdl-card__banner"><br></div>
 			<div class="mdl-card__title">
 				<h6 class="mdl-card__title-text">{{ portal.name }}</h6>
 			</div>
