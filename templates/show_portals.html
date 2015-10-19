@@ -14,9 +14,9 @@
 	</script>
 	<div class="mdl-grid">
 		{% for portal in portals %}
-			<div class="profile-card-square mdl-card mdl-cell mdl-cell--2-col mdl-cell--3-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
-				<a href="{{ url_for('portal', id=portal.id ) }}" style="background: url('/static/Images/{{ portal["imgFilename"] }}') center center no-repeat;width: auto;height: 256px;background-size:contain;display:block;overflow:hidden;text-indent:100%;white-space:nowrap;">{{ portal.name }}</a>
-			</div>
+		<div class="profile-card-square mdl-card mdl-cell mdl-cell--2-col mdl-cell--3-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+			<a href="{{ url_for('portal', id=portal.id ) }}" class="image-card" style="background: url('/static/Images/{{ portal["imgFilename"] }}') center center no-repeat;">{{ portal.name }}</a>
+		</div>
 		{% else %}
 		<em>Unbelievable.  No portals here so far</em>
 		{% endfor %}
