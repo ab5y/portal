@@ -16,6 +16,7 @@
 		{% for portal in portals %}
 		<a href="{{ url_for('portal', id=portal.id ) }}">
 			<div class="profile-card-square mdl-card mdl-cell mdl-cell--2-col mdl-cell--3-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp">
+				<!-- no-repeat center center;background-origin: content-box;background-size: cover; -->
 				<div class="mdl-card__title" style="background: url('/static/Images/{{ portal["imgFilename"] }}') bottom 60% right 54% no-repeat;width: 256px;height: 256px;">
 					<h2 class="mdl-card__title-text"><a href="{{ url_for('portal', id=portal.id ) }}">{{ portal.name }}</a></h2>
 				</div>
