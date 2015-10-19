@@ -102,6 +102,7 @@ init_db()
 
 clientIds = create_clients()
 create_client_contacts(clientIds)
+create_client_requirements(clientIds)
 propertyIds = create_property()
 create_client_property(clientIds, propertyIds)
 
