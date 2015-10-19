@@ -127,37 +127,43 @@ td > img {
 	max-height: none !important;
 }
 </style>
-	<div class="mdl-gird">
+	<div class="mdl-grid">
 		<div class="mdl-cell mdl-cell--2-col" style="float:left"></div>
-		<div class="profile-card-wide mdl-card mdl-cell mdl-cell--8-col mdl-shadow--2dp">
-			<div class="mdl-card__banner"><br></div>
-			<div class="mdl-card__title">
+		<div class="mdl-card image-card mdl-cell mdl-cell--2-col" style="background: url('/static/Images/{{ portal["imgFilename"] }}') center center no-repeat;height:auto;"></div>
+		<div class="mdl-card mdl-cell mdl-cell--6-col">
+			<div class="mdl-card__title hidden">
 				<h6 class="mdl-card__title-text">{{ portal.name }}</h6>
 			</div>
+			<br>
 			<div class="mdl-card__supporting-text">
 				<fieldset>
 					<ol class="portal-details">
 						<li>
-							<label>Contact Name</label>
-							<b>{{ portal["firstName"]+' '+portal["lastName"] }}</b>
+							<label><b>Contact Name:</b></label>
+							{{ portal["firstName"]+' '+portal["lastName"] }}
 						</li>
 						<li>
-							<label>Address</label>
-							<b>{{ portal["address"] }}</b>
+							<label><b>Address:</b></label>
+							{{ portal["address"] }}
 						</li>
 						{% if portal["phone"] %}
 						<li>
-							<label>Phone</label>
-							<b>{{ portal["phone"] }}</b>
+							<label><b>Phone:</b></label>
+							{{ portal["phone"] }}
 						</li>
 						{% endif %}
 						<li>
-							<label>Email</label>
-							<b>{{ portal["email"] }}</b>
+							<label><b>Email:</b></label>
+							{{ portal["email"] }}
 						</li>
 					</ol>
 				</fieldset>
 			</div>
+		</div>
+	</div>
+	<div class="mdl-gird">
+		<div class="mdl-cell mdl-cell--2-col" style="float:left"></div>
+		<div class="profile-card-wide mdl-card mdl-cell mdl-cell--8-col mdl-shadow--2dp">
 			<div class="mdl-card announcement-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
 				<div class="mdl-card__title"><h1 class="mdl-card__title-text">Announcements</h1></div>
 				<div class="mdl-card__supporting-text">
